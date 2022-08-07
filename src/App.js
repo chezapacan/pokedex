@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import { Layout } from './components/Layout';
+import { Main } from './pages/Main';
+import { NotFound } from './pages/NotFound';
+import { Pokemon } from './pages/Pokemon';
+import { selectSearch } from './redux/selectors';
+import { getPokemon } from './redux/slices/pokemonSlice';
 
 function App() {
+  const dispatch = useDispatch();
+  const pokemon = useSelector(selectSearch);
+  useEffect(() => {
+    dispatch(getPokemon());
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route path='/' element={<Main pokemon={pokemon} />} />
+          <Route path=':pokemonId' element={<Pokemon />} />
+          <Route path='*' element={<NotFound />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
